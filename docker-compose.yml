@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n
+    container_name: n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_ENCRYPTION_KEY=187d9f42d9eb77116613f71a2a4465b73b54ade22f2fce1988c4e1b7df525391
+      - N8N_HOST=n8n
+      - WEBHOOK_TUNNEL_URL=http://localhost:5678
+      - NODE_ENV=production
+      # (опционально) включи Basic Auth:
+      - N8N_BASIC_AUTH_ACTIVE=false
+      # - N8N_BASIC_AUTH_USER=admin
+      # - N8N_BASIC_AUTH_PASSWORD=secret
+    volumes:
+      - ./n8n-data:/home/node/.n8n
+      - ./data:/data  # для доступа к knowledge_base.json и т.п.
+      - ./workflows:/workflows
+    depends_on:
+      - ollama
+      - qdrant
+    networks:
+      - rag-network
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - rag-network
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"      # REST API
+      # - "6334:6334"      # gRPC (опционально, можно закомментировать если не нужен)
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    networks:
+      - rag-network
+
+volumes:
+  ollama_models:
+  qdrant_storage:
+
+networks:
+  rag-network:
+    driver: bridge

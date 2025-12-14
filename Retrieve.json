@@ -1,0 +1,240 @@
+{
+  "name": "Retrieve",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"prompt\": \"curl\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -464,
+        176
+      ],
+      "id": "fd721ad8-ab53-4f86-bd87-bdde76d3eec2",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        176
+      ],
+      "id": "074e06ac-1e39-4ab6-b757-d4d01f45d771",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "DBTYYuJIbjnjViPU",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        336,
+        176
+      ],
+      "id": "c3008cc9-85f3-45e3-abf8-7c22c374d402",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"content\": \"{{ $json.document.pageContent }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        512,
+        176
+      ],
+      "id": "424d027d-f843-4e65-ae56-76f57d440a53",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "00dfa5ac-7d35-4931-94c2-3420c7f6de68",
+              "name": "document",
+              "value": "={\n  \"pageContent\": \"Jopa\"\n}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        352
+      ],
+      "id": "701cabe3-aeb4-4a51-b280-8196d15765a7",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "load",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "rag",
+          "mode": "list",
+          "cachedResultName": "rag"
+        },
+        "prompt": "={{ $json.prompt }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "fd2f1eb2-2d56-4e13-ac03-dddda989a446",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "vQJGcfFRyHELlhFx",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "604021b5-0c41-4da9-9442-e06c1d24010f",
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 0.5,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        112,
+        0
+      ],
+      "id": "3f5599ac-b94d-4e5e-9a22-9bf9002a32a8",
+      "name": "Filter"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "prompt": "Язык программирования Python"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cdf49bed-18f2-49f4-8261-2dee704898b7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8340478bb6cf69a6c6228440bb2763a8ee396723f0a0de14ac81001e45d558ad"
+  },
+  "id": "3Yspvx14dcmmEBpd",
+  "tags": []
+}

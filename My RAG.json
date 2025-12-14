@@ -1,0 +1,138 @@
+{
+  "name": "My RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.query }}",
+        "options": {
+          "systemPromptTemplate": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.\n----------------\nQuery: {input}\n----------------\nContext: {context}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        144,
+        0
+      ],
+      "id": "0e2d40da-5732-4559-bac2-8d501cc0400d",
+      "name": "Question and Answer Chain"
+    },
+    {
+      "parameters": {
+        "model": "Gemma3:270m",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        112,
+        192
+      ],
+      "id": "09851463-e6c8-4a3a-9766-91551a074861",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "DBTYYuJIbjnjViPU",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3Yspvx14dcmmEBpd",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/3Yspvx14dcmmEBpd",
+          "cachedResultName": "Retrieve"
+        },
+        "fields": {
+          "values": [
+            {
+              "name": "prompt",
+              "stringValue": "={{ $json.chatInput }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.retrieverWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        192
+      ],
+      "id": "6f526c42-6065-4c55-a9c1-fe26b57c5730",
+      "name": "Workflow Retriever"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pipeline",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        0
+      ],
+      "id": "eeae9622-aa91-47fb-808a-82225eda5d1e",
+      "name": "Webhook",
+      "webhookId": "4714ccce-85ab-4245-8aa3-00d0d7078bbc"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Question and Answer Chain": {
+      "main": [
+        []
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Retriever": {
+      "ai_retriever": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "af35f613-da95-4e91-9e80-3df3df829b50",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8340478bb6cf69a6c6228440bb2763a8ee396723f0a0de14ac81001e45d558ad"
+  },
+  "id": "BEDaS3VZGXRjebHo",
+  "tags": []
+}
