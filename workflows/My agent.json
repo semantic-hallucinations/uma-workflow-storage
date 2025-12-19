@@ -1,0 +1,313 @@
+{
+  "name": "My agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pipeline",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        0
+      ],
+      "id": "2322bc42-a2a8-46aa-b1e2-203806b745f6",
+      "name": "Webhook",
+      "webhookId": "811b92c8-7e76-4d55-bece-cfa7ccb01bf4"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        320,
+        0
+      ],
+      "id": "e11b9fd3-2c01-49db-8c06-b780c0ae5f91",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        416,
+        224
+      ],
+      "id": "bac107d1-7a15-41b5-bcbd-b4f0289914bc",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://mcp-server:8000/mcp/sse",
+        "serverTransport": "sse",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        224
+      ],
+      "id": "404a64eb-a8f3-49bb-bfe4-1d5e1df4b5d6",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "description": "Call this tools to get retrieve by your prompt. Prompt field must be filled. Scheme is {\"prompt\": \"{prompt}\"}",
+        "workflowId": {
+          "__rl": true,
+          "value": "3Yspvx14dcmmEBpd",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/3Yspvx14dcmmEBpd",
+          "cachedResultName": "Retrieve"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [
+            "prompt"
+          ],
+          "schema": [
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        224
+      ],
+      "id": "1ca893c6-f689-428a-a281-6bdec96ef4ba",
+      "name": "Call 'Retrieve'"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -176,
+        208
+      ],
+      "id": "d4641f76-ede3-4e4a-8e63-66ae196b840b",
+      "name": "When chat message received",
+      "webhookId": "e7e1d681-8328-494f-837b-132e43051ed7"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n\"sessionId\": \"{{$json.body.sessionId}}\",\n\"action\": \"sendMessage\",\n\"chatInput\": \"{{$json.body.query}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "160729a1-01ab-4055-9c37-c0e425acac3a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"response\": \"{{ $json.output }}\" \n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        0
+      ],
+      "id": "2b42fb4b-9b5d-4944-87d9-882032486aba",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "model": "Qwen2.5:0.5b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        320,
+        304
+      ],
+      "id": "2b698ee2-fcbb-4f6c-bf34-43dec3723212",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "DBTYYuJIbjnjViPU",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        192,
+        240
+      ],
+      "id": "65599cec-7a02-4c21-af07-b338ecfda626",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YbiBe0Jd1p5xUGSg",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatXAiGrok",
+      "typeVersion": 1,
+      "position": [
+        384,
+        416
+      ],
+      "id": "8b40f04f-e2b9-418d-838b-eacbf964d81c",
+      "name": "xAI Grok Chat Model",
+      "credentials": {
+        "xAiApi": {
+          "id": "gyr9YDk4vSbQBiRK",
+          "name": "xAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Retrieve'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8dd4ac57-0fa7-4a3c-b387-654e5297eacb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8340478bb6cf69a6c6228440bb2763a8ee396723f0a0de14ac81001e45d558ad"
+  },
+  "id": "gzIyAv1wtxvH9QXw",
+  "tags": []
+}

@@ -4,7 +4,7 @@
     {
       "parameters": {
         "inputSource": "jsonExample",
-        "jsonExample": "{\n  \"prompt\": \"curl\"\n}"
+        "jsonExample": "{\n  \"prompt\": \"Расскажи о природе\"\n}"
       },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -123,7 +123,7 @@
             {
               "id": "604021b5-0c41-4da9-9442-e06c1d24010f",
               "leftValue": "={{ $json.score }}",
-              "rightValue": 0.5,
+              "rightValue": 0,
               "operator": {
                 "type": "number",
                 "operation": "gt"
@@ -148,7 +148,7 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "prompt": "Язык программирования Python"
+          "prompt": "Расскажи о природе"
         }
       }
     ]
@@ -230,7 +230,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "cdf49bed-18f2-49f4-8261-2dee704898b7",
+  "versionId": "fb7efc3d-73d0-4a35-af8d-0504144f3ade",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8340478bb6cf69a6c6228440bb2763a8ee396723f0a0de14ac81001e45d558ad"
