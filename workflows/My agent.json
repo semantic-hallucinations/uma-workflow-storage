@@ -38,7 +38,7 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        416,
+        288,
         224
       ],
       "id": "bac107d1-7a15-41b5-bcbd-b4f0289914bc",
@@ -53,8 +53,8 @@
       "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
       "typeVersion": 1.2,
       "position": [
-        560,
-        224
+        624,
+        192
       ],
       "id": "404a64eb-a8f3-49bb-bfe4-1d5e1df4b5d6",
       "name": "MCP Client"
@@ -94,8 +94,8 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        688,
-        224
+        752,
+        160
       ],
       "id": "1ca893c6-f689-428a-a281-6bdec96ef4ba",
       "name": "Call 'Retrieve'"
@@ -146,33 +146,13 @@
     },
     {
       "parameters": {
-        "model": "Qwen2.5:0.5b",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
-      "typeVersion": 1,
-      "position": [
-        320,
-        304
-      ],
-      "id": "2b698ee2-fcbb-4f6c-bf34-43dec3723212",
-      "name": "Ollama Chat Model",
-      "credentials": {
-        "ollamaApi": {
-          "id": "DBTYYuJIbjnjViPU",
-          "name": "Ollama account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
       "position": [
-        192,
-        240
+        144,
+        224
       ],
       "id": "65599cec-7a02-4c21-af07-b338ecfda626",
       "name": "Google Gemini Chat Model",
@@ -190,8 +170,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatXAiGrok",
       "typeVersion": 1,
       "position": [
-        384,
-        416
+        -48,
+        368
       ],
       "id": "8b40f04f-e2b9-418d-838b-eacbf964d81c",
       "name": "xAI Grok Chat Model",
@@ -201,6 +181,72 @@
           "name": "xAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Этот инструмент для получения деталей о чем-то про БГУИР",
+        "method": "POST",
+        "url": "http://lightrag:9621/query",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $fromAI(\"query\") }}"
+            },
+            {
+              "name": "mode",
+              "value": "local"
+            },
+            {
+              "name": "stream",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        384,
+        256
+      ],
+      "id": "6932091c-31cf-4fb8-bc54-4170935c0de7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Этот инструмент для обзора по какой-либо теме в БГУИР",
+        "method": "POST",
+        "url": "http://lightrag:9621/query",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $fromAI(\"query\") }}"
+            },
+            {
+              "name": "mode",
+              "value": "local"
+            },
+            {
+              "name": "stream",
+              "value": "false"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        496,
+        256
+      ],
+      "id": "bc20afc0-106d-4389-b529-8af834fba48b",
+      "name": "HTTP Request1"
     }
   ],
   "pinData": {},
@@ -282,11 +328,6 @@
         ]
       ]
     },
-    "Ollama Chat Model": {
-      "ai_languageModel": [
-        []
-      ]
-    },
     "Google Gemini Chat Model": {
       "ai_languageModel": [
         [
@@ -297,13 +338,35 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "8dd4ac57-0fa7-4a3c-b387-654e5297eacb",
+  "versionId": "4af06441-43f6-4fa5-aa95-cadaaa07c951",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8340478bb6cf69a6c6228440bb2763a8ee396723f0a0de14ac81001e45d558ad"
